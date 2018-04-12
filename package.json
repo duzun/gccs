@@ -2,6 +2,7 @@
   "name": "gccs",
   "version": "1.0.0",
   "description": "Vanila Node.js script to compile JS code using Google Closure Compiler Service (zero dependencies)",
+  "reveal": true,
   "main": "gccs.js",
   "bin": "./gccs.js",
   "files": ["gccs.js"],
