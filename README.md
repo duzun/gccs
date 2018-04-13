@@ -1,7 +1,7 @@
 
 # gccs == google-closure-compliler-service
 
-Vanila Node.js script to compile JS code using 
+Vanilla Node.js script to compile JS code using 
 Google's [Closure Compiler Service](https://closure-compiler.appspot.com/home) (zero dependencies).
 
 ## Install 
