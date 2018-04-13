@@ -32,6 +32,9 @@ gccs input.js output.min.js
 # Output compiled JS to console (stdout)
 gccs input.js -
 
+# With options. When https == false, it might be faster. Other options go to GCC service
+gccs --https false --compilation_level WHITESPACE_ONLY --formatting pretty_print -- input.es6.js output.es5.js
+
 # Pipe
 cat input.js | gccs
 cat input.js | gccs - output.min.js
