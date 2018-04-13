@@ -4,6 +4,19 @@
 Vanila Node.js script to compile JS code using 
 Google's [Closure Compiler Service](https://closure-compiler.appspot.com/home) (zero dependencies).
 
+## Install 
+
+You can install `gccs` either as a global CLI script or per project.
+
+```sh
+# global
+npm -g i gccs
+
+# in project
+npm i gccs
+```
+
+
 ## Usage
 
 ### CLI
@@ -11,16 +24,20 @@ Google's [Closure Compiler Service](https://closure-compiler.appspot.com/home) (
 ```sh
 
 # Compile input.js and save output as input.min.js
-node gccs.js input.js
+gccs input.js
 
 # Compile input.js to output.min.js
-node gccs.js input.js output.min.js
+gccs input.js output.min.js
 
 # Output compiled JS to console (stdout)
-node gccs.js input.js -
+gccs input.js -
+
+# Pipe
+cat input.js | gccs
+cat input.js | gccs - output.min.js
 
 # Compile a node.js CLI script (with shebang)
-(echo '#!/bin/env node' && node gccs.js my-cli.js -) > my-cli && chmod +x my-cli
+(echo '#!/bin/env node' && gccs my-cli.js -) > my-cli && chmod +x my-cli
 
 ```
 
@@ -48,10 +65,22 @@ gccs.file('input.js', function (error, minjs) {
     console.log(minjs); // minified contents of 'input.js'
 })
 
-// Compile a JS file and save output to another file
-gccs.file('input.js', 'output.min.js', function (error) {})
-
 // Compile a JS file and output to console (stdout)
 gccs.file('input.js', '-', function (error, minjs) {})
+// or
+gccs.file('input.js', process.stdout, function (error, minjs) {})
+
+
+// Compile a JS file (stream in)
+var _in = fs.createReadStream('input.js');
+gccs(_in, function (error, minjs) {
+    if ( error ) return console.error(error);
+    console.log(minjs); // minified contents of 'input.js'
+});
+
+// Compile a JS file and save output to another file (stream in and out)
+var _in = fs.createReadStream('input.js');
+var _out = fs.createWriteStream('output.min.js');
+gccs.file(_in, _out, function (error) {})
 
 ```

@@ -1,14 +1,17 @@
 {
   "name": "gccs",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Vanila Node.js script to compile JS code using Google Closure Compiler Service (zero dependencies)",
   "reveal": true,
   "main": "gccs.js",
   "bin": "./gccs.js",
-  "files": ["gccs.js"],
+  "files": [
+    "gccs.js"
+  ],
   "homepage": "https://closure-compiler.appspot.com/home",
   "scripts": {
-    "test": "(echo '#!/bin/env node' && node gccs.js gccs.js -) > gccs.min.js"
+    "verup": "verup",
+    "test": "(echo '#!/bin/env node' && node gccs.js gccs.js -) > gccs.min.js && chmod +x gccs.min.js && echo success"
   },
   "keywords": [
     "google-closure-compiler-service",
@@ -39,5 +42,15 @@
     "eqnull": true,
     "scripturl": true,
     "-W041": false
+  },
+  "devDependencies": {
+    "verup": "^1.4.1"
+  },
+  "extra": {
+    "verup": {
+      "files": [
+        "gccs.js"
+      ]
+    }
   }
 }
