@@ -48,11 +48,12 @@
     "-W041": false
   },
   "devDependencies": {
-    "verup": "^1.6"
+    "verup": "^1.6.1"
   },
   "extra": {
     "verup": {
       "files": [
+        "package-lock.json",
         "gccs.js"
       ]
     }
