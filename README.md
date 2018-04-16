@@ -1,5 +1,5 @@
 
-# gccs == google-closure-compliler-service
+# gccs == google-closure-compliler-service [![Build Status](https://travis-ci.org/duzun/gccs.svg?branch=master)](https://travis-ci.org/duzun/gccs)
 
 Vanilla Node.js script to compile JS code using 
 Google's [Closure Compiler Service](https://closure-compiler.appspot.com/home) (zero dependencies).
