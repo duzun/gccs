@@ -1,6 +1,6 @@
 {
   "name": "gccs",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Vanilla Node.js script to compile JS code/files using Google Closure Compiler Service (zero dependencies)",
   "reveal": true,
   "main": "gccs.es5.js",
@@ -13,7 +13,7 @@
   "homepage": "https://closure-compiler.appspot.com/home",
   "scripts": {
     "verup": "verup",
-    "test": "(echo '#!/bin/env node' && node gccs.js --compilation_level WHITESPACE_ONLY --formatting pretty_print -- gccs.js -) > gccs.es5.js && chmod +x gccs.es5.js && (echo '#!/bin/env node' && node gccs.es5.js -- gccs.es5.js -) > gccs.min.js && chmod +x gccs.min.js && ! diff -q gccs.es5.js gccs.min.js > /dev/null && echo success"
+    "test": "node gccs.js --compilation_level WHITESPACE_ONLY --formatting pretty_print -- gccs.js gccs.es5.js && chmod +x gccs.es5.js && node gccs.es5.js -- gccs.es5.js gccs.min.js && chmod +x gccs.min.js && ! diff -q gccs.es5.js gccs.min.js > /dev/null && echo success"
   },
   "keywords": [
     "google-closure-compiler-service",
@@ -32,6 +32,8 @@
     "url": "https://github.com/duzun/gccs.git"
   },
   "jshintConfig": {
+    "node": true,
+    "esversion": 6,
     "laxbreak": true,
     "laxcomma": true,
     "undef": true,
@@ -46,7 +48,7 @@
     "-W041": false
   },
   "devDependencies": {
-    "verup": "^1.4.1"
+    "verup": "^1.6"
   },
   "extra": {
     "verup": {

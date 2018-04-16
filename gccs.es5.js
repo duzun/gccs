@@ -1,14 +1,16 @@
-#!/bin/env node
+#!/usr/bin/env node
 /*
  MIT https://github.com/duzun/gccs/blob/master/LICENSE
- @version  1.2.0
+ @version  1.3.0
 */
 (function(utf8, dash) {
+  var VERSION = "1.3.0";
   var http = require("http");
   var https = require("https");
   var fs = require("fs");
   var path = require("path");
   var querystring = require("querystring");
+  compile.VERSION = VERSION;
   if (!module.parent) {
     var opt = {};
     var argv = process.argv;
@@ -78,6 +80,7 @@
     if (Buffer.isBuffer(js_code)) {
       js_code = js_code.toString(utf8);
     }
+    var shebang = js_code.match(/^#!.{3,}/);
     opt.js_code = js_code;
     var options = Object.assign({warning_level:"QUIET", compilation_level:"SIMPLE_OPTIMIZATIONS"}, opt, {output_info:"compiled_code", output_format:"text"});
     var port = 443;
@@ -92,7 +95,13 @@
     var data = querystring.stringify(options);
     var req = mod.request({hostname:"closure-compiler.appspot.com", port:port, path:"/compile", method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded", "Content-Length":Buffer.byteLength(data)}}, function(res) {
       stream2buffer(res, function(err, buf) {
-        cb(err, buf && buf.toString(utf8), res);
+        if (buf) {
+          buf = buf.toString(utf8);
+        }
+        if (shebang) {
+          buf = shebang[0] + "\n" + buf;
+        }
+        cb(err, buf, res);
       });
     });
     req.on("error", cb);

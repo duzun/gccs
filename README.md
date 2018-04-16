@@ -39,9 +39,12 @@ gccs --https false --compilation_level WHITESPACE_ONLY --formatting pretty_print
 cat input.js | gccs
 cat input.js | gccs - output.min.js
 
-# Compile a node.js CLI script (with shebang)
-(echo '#!/bin/env node' && gccs my-cli.js -) > my-cli && chmod +x my-cli
+# Compile a node.js CLI script (gccs preserves shebang of my-cli.js)
+gccs my-cli.js my-cli && chmod +x my-cli
 
+# Compile a node.js CLI script and add shebang
+# Note: Use this when my-cli.js doesn't already containe the shebang
+(echo '#!/usr/bin/env node' && gccs my-cli.js -) > my-cli && chmod +x my-cli
 ```
 
 ### Node module

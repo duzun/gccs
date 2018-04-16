@@ -1,22 +1,23 @@
-#!/bin/env node
+#!/usr/bin/env node
 
 /**
  * Compile JS files using Google's Closure-Compiler service
  *
  * @author  Dumitru Uzun (https://DUzun.Me)
  * @license MIT https://github.com/duzun/gccs/blob/master/LICENSE
- * @version  1.2.0
+ * @version  1.3.0
  */
 
-/*jshint node: true, esversion: 6*/
-
 ((utf8, dash) => {
+const VERSION = '1.3.0';
 
 const http        = require('http');
 const https       = require('https');
 const fs          = require('fs');
 const path        = require('path');
 const querystring = require('querystring');
+
+compile.VERSION = VERSION;
 
 // CLI
 if ( !module.parent ) {
@@ -93,6 +94,8 @@ function compile(js_code, cb) {
         js_code = js_code.toString(utf8);
     }
 
+    let shebang = js_code.match(/^#!.{3,}/);
+
     opt.js_code = js_code;
 
     const options = Object.assign({
@@ -126,8 +129,13 @@ function compile(js_code, cb) {
           'Content-Length': Buffer.byteLength(data)
       }
     }, (res) => {
-      // console.log('STATUS: ' + res.statusCode);
-      stream2buffer(res, (err, buf) => { cb(err, buf && buf.toString(utf8), res); });
+        // console.log('STATUS: ' + res.statusCode);
+        stream2buffer(res, (err, buf) => {
+            if ( buf ) buf = buf.toString(utf8);
+            if ( shebang ) buf = shebang[0] + '\n' + buf;
+            cb(err, buf, res);
+            // cb(err, (shebang ? shebang[0] + '\n' : '') + (buf ? buf.toString(utf8) : ''), res);
+        });
     });
 
     req.on('error', cb);
