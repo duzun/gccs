@@ -9,6 +9,8 @@
  */
 
 ((utf8, dash) => {
+'use strict';
+
 const VERSION = '1.3.0';
 
 const http        = require('http');

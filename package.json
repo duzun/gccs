@@ -14,7 +14,7 @@
   "scripts": {
     "verup": "verup",
     "build": "node gccs.js --compilation_level WHITESPACE_ONLY --formatting pretty_print -- gccs.js gccs.es5.js && chmod +x gccs.es5.js",
-    "test": "( [ -f gccs.es5.js ] || npm run build ) && node gccs.es5.js -- gccs.es5.js gccs.min.js && chmod +x gccs.min.js && ! diff -q gccs.es5.js gccs.min.js > /dev/null && echo success"
+    "test": "npm run build && node gccs.es5.js -- gccs.es5.js gccs.min.js && chmod +x gccs.min.js && ! diff -q gccs.es5.js gccs.min.js > /dev/null && echo success"
   },
   "keywords": [
     "google-closure-compiler-service",
