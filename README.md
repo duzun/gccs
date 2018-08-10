@@ -10,7 +10,7 @@ You can install `gccs` either as a global CLI script or per project.
 
 ```sh
 # global
-npm -g i gccs
+npm i -g gccs
 
 # in project
 npm i gccs
@@ -19,10 +19,12 @@ npm i gccs
 
 ## Usage
 
+Actually, there is no real need to install it if you have `npx` (default with `npm@5.2.0` and up).
+Just call it with `npx gccs input.js`
+
 ### CLI
 
 ```sh
-
 # Compile input.js and save output as input.min.js
 gccs input.js
 
@@ -43,9 +45,31 @@ cat input.js | gccs - output.min.js
 gccs my-cli.js my-cli && chmod +x my-cli
 
 # Compile a node.js CLI script and add shebang
-# Note: Use this when my-cli.js doesn't already containe the shebang
+# Note: Use this when my-cli.js doesn't already contain the shebang
 (echo '#!/usr/bin/env node' && gccs my-cli.js -) > my-cli && chmod +x my-cli
 ```
+
+#### package.json
+
+For a small JS/ES6 library `gccs` could be sufficient as a build script.
+Here is an example of `build` command for `package.json`
+of [verup](https://github.com/duzun/verup) library:
+
+```js
+...
+"scripts": {
+  "es5": "gccs --compilation_level WHITESPACE_ONLY --formatting pretty_print -- verup.js dist/verup.js",
+  "min": "gccs dist/verup.js dist/verup.min.js",
+  "build": "npm run es5 && npm run min"
+  ...
+}
+...
+```
+
+This build command would produce the ES5 version of `verup.js` at `dist/verup.js`
+and the minified ES5 version at `dist/verup.min.js`.
+Isn't that cool? :-)
+
 
 ### Node module
 
