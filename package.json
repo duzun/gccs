@@ -49,7 +49,7 @@
     "-W041": false
   },
   "devDependencies": {
-    "verup": "^1.6.1"
+    "verup": "^1.7.0"
   },
   "extra": {
     "verup": {
