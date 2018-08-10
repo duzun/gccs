@@ -1,10 +1,10 @@
 
-# gccs == google-closure-compliler-service [![Build Status](https://travis-ci.org/duzun/gccs.svg?branch=master)](https://travis-ci.org/duzun/gccs)
+# gccs == google-closure-compliler-service [![Build Status](https://travis-ci.org/duzun/gccs.svg?branch=master)](https://travis-ci.org/duzun/gccs) [![npm version](https://badge.fury.io/js/gccs.svg)](https://badge.fury.io/js/gccs)
 
 Vanilla Node.js script to compile JS code using 
 Google's [Closure Compiler Service](https://closure-compiler.appspot.com/home) (zero dependencies).
 
-## Install 
+## Install
 
 You can install `gccs` either as a global CLI script or per project.
 
