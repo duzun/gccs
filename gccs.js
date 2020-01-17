@@ -5,13 +5,13 @@
  *
  * @author  Dumitru Uzun (https://DUzun.Me)
  * @license MIT https://github.com/duzun/gccs/blob/master/LICENSE
- * @version  1.3.0
+ * @version  1.3.1
  */
 
 ((utf8, dash) => {
 'use strict';
 
-const VERSION = '1.3.0';
+const VERSION = '1.3.1';
 
 const http        = require('http');
 const https       = require('https');
@@ -79,7 +79,7 @@ else {
 
 function compile(js_code, cb) {
     let opt = {};
-    if ( js_code && typeof js_code == 'object' && !isStream(js_code) ) {
+    if ( isObject(js_code) && !isStream(js_code) ) {
         opt = js_code;
         js_code = opt.js_code;
     }
@@ -108,28 +108,24 @@ function compile(js_code, cb) {
       , output_format: 'text'
     });
 
-    let port = 443;
-    let mod = https;
+    const { mod, port } = 'https' in options && !options.https
+        ? { mod: http, port: 80 }
+        : { mod: https, port: 443 }
+    ;
 
-    if ( 'https' in options ) {
-        if ( !options.https ) {
-            port = 80;
-            mod = http;
-        }
-        delete options.https;
-    }
+    delete options.https;
 
     const data = querystring.stringify(options);
 
     const req = mod.request({
-      hostname: 'closure-compiler.appspot.com'
-      , port: port
-      , path: '/compile'
-      , method: 'POST'
-      , headers: {
+      hostname: 'closure-compiler.appspot.com',
+      port: port,
+      path: '/compile',
+      method: 'POST',
+      headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
-          'Content-Length': Buffer.byteLength(data)
-      }
+          'Content-Length': Buffer.byteLength(data),
+      },
     }, (res) => {
         // console.log('STATUS: ' + res.statusCode);
         stream2buffer(res, (err, buf) => {
@@ -148,7 +144,7 @@ function compile(js_code, cb) {
 }
 
 function compileFile(filename, opt, cb) {
-    if ( !cb && typeof opt == 'function' ) {
+    if ( !cb && isFunction(opt) ) {
         cb = opt;
         opt = undefined;
     }
@@ -161,7 +157,7 @@ function compileFile(filename, opt, cb) {
     let out_file;
 
     if ( opt ) {
-        if ( typeof opt == 'string' || isStream(opt) ) {
+        if ( isString(opt) || isStream(opt) ) {
             out_file = opt;
             opt = undefined;
         }
@@ -200,28 +196,6 @@ function compileFile(filename, opt, cb) {
     });
 }
 
-function isStream(stream) {
-    return stream !== null &&
-    typeof stream === 'object' &&
-    typeof stream.pipe === 'function';
-}
-
-function stream2buffer(stream, cb) {
-    let buf = [];
-    stream.on('data', (chunk) => { buf.push(chunk); });
-    stream.on('end', () => { cb(null, buf = Buffer.concat(buf), stream); });
-    stream.on('error', cb);
-    return stream;
-}
-
-function try_parse(str) {
-    if ( typeof str == 'string' ) try {
-        return JSON.parse(str);
-    }
-    catch(err) {}
-    return str;
-}
-
 function usage(stream) {
     const gccs = path.basename(process.argv[1], '.js');
     const txt =
@@ -242,5 +216,39 @@ function usage(stream) {
         return txt;
     }
 }
+
+    // ---  Helpers ---
+
+    function stream2buffer(stream, cb) {
+        let buf = [];
+        stream.on('data', (chunk) => { buf.push(chunk); });
+        stream.on('end', () => { cb(null, buf = Buffer.concat(buf), stream); });
+        stream.on('error', cb);
+        return stream;
+    }
+
+    function try_parse(str) {
+        if ( isString(str) ) try {
+            return JSON.parse(str);
+        }
+        catch(err) {}
+        return str;
+    }
+
+    function isString(val) {
+        return typeof val === 'string';
+    }
+
+    function isFunction(val) {
+        return typeof val === 'function';
+    }
+
+    function isObject(val) {
+        return val && typeof val === 'object';
+    }
+
+    function isStream(stream) {
+        return isObject(stream) && isFunction(stream.pipe);
+    }
 
 })('utf8', '-');

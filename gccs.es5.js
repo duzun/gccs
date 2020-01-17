@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /*
  MIT https://github.com/duzun/gccs/blob/master/LICENSE
- @version  1.3.0
+ @version  1.3.1
 */
 (function(utf8, dash) {
-  var VERSION = "1.3.0";
+  var VERSION = "1.3.1";
   var http = require("http");
   var https = require("https");
   var fs = require("fs");
@@ -64,7 +64,7 @@
   }
   function compile(js_code, cb) {
     var opt = {};
-    if (js_code && typeof js_code == "object" && !isStream(js_code)) {
+    if (isObject(js_code) && !isStream(js_code)) {
       opt = js_code;
       js_code = opt.js_code;
     }
@@ -83,15 +83,10 @@
     var shebang = js_code.match(/^#!.{3,}/);
     opt.js_code = js_code;
     var options = Object.assign({warning_level:"QUIET", compilation_level:"SIMPLE_OPTIMIZATIONS"}, opt, {output_info:"compiled_code", output_format:"text"});
-    var port = 443;
-    var mod = https;
-    if ("https" in options) {
-      if (!options.https) {
-        port = 80;
-        mod = http;
-      }
-      delete options.https;
-    }
+    var $jscomp$destructuring$var0 = "https" in options && !options.https ? {mod:http, port:80} : {mod:https, port:443};
+    var mod = $jscomp$destructuring$var0.mod;
+    var port = $jscomp$destructuring$var0.port;
+    delete options.https;
     var data = querystring.stringify(options);
     var req = mod.request({hostname:"closure-compiler.appspot.com", port:port, path:"/compile", method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded", "Content-Length":Buffer.byteLength(data)}}, function(res) {
       stream2buffer(res, function(err, buf) {
@@ -110,14 +105,14 @@
     return req;
   }
   function compileFile(filename, opt, cb) {
-    if (!cb && typeof opt == "function") {
+    if (!cb && isFunction(opt)) {
       cb = opt;
       opt = undefined;
     }
     var in_file = filename !== dash ? isStream(filename) ? filename : fs.createReadStream(filename) : process.stdin;
     var out_file;
     if (opt) {
-      if (typeof opt == "string" || isStream(opt)) {
+      if (isString(opt) || isStream(opt)) {
         out_file = opt;
         opt = undefined;
       } else {
@@ -151,8 +146,14 @@
       }
     });
   }
-  function isStream(stream) {
-    return stream !== null && typeof stream === "object" && typeof stream.pipe === "function";
+  function usage(stream) {
+    var gccs = path.basename(process.argv[1], ".js");
+    var txt = "Usage:\n    " + gccs + ' [ <in_file> [ <out_file> ] ]\n\n    If <out_file> is omitted, out_file = in_file.min.js\n    If <in_file> == "-", stdin is used (<out_file> defaults to "-").\n    If <out_file> == "-", stdout is used.\n    If <in_file> and <out_file> are both omitted, they both default to "-".\n';
+    if (stream) {
+      stream.write(txt);
+    } else {
+      return txt;
+    }
   }
   function stream2buffer(stream, cb) {
     var buf = [];
@@ -166,7 +167,7 @@
     return stream;
   }
   function try_parse(str) {
-    if (typeof str == "string") {
+    if (isString(str)) {
       try {
         return JSON.parse(str);
       } catch (err) {
@@ -174,14 +175,17 @@
     }
     return str;
   }
-  function usage(stream) {
-    var gccs = path.basename(process.argv[1], ".js");
-    var txt = "Usage:\n    " + gccs + ' [ <in_file> [ <out_file> ] ]\n\n    If <out_file> is omitted, out_file = in_file.min.js\n    If <in_file> == "-", stdin is used (<out_file> defaults to "-").\n    If <out_file> == "-", stdout is used.\n    If <in_file> and <out_file> are both omitted, they both default to "-".\n';
-    if (stream) {
-      stream.write(txt);
-    } else {
-      return txt;
-    }
+  function isString(val) {
+    return typeof val === "string";
+  }
+  function isFunction(val) {
+    return typeof val === "function";
+  }
+  function isObject(val) {
+    return val && typeof val === "object";
+  }
+  function isStream(stream) {
+    return isObject(stream) && isFunction(stream.pipe);
   }
 })("utf8", "-");
 
