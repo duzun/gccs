@@ -26,7 +26,7 @@
     "javascript",
     "build"
   ],
-  "author": "Dumitru Uzun <contanct@duzun.me> (https://DUzun.Me)",
+  "author": "Dumitru Uzun <contact@duzun.me> (https://DUzun.Me)",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -49,7 +49,7 @@
     "-W041": false
   },
   "devDependencies": {
-    "verup": "^1.7.0"
+    "verup": "^1.7"
   },
   "extra": {
     "verup": {
