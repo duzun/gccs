@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /*
  MIT https://github.com/duzun/gccs/blob/master/LICENSE
- @version  1.3.1
+ @version  1.3.2
 */
-(function(utf8, dash) {
-  var VERSION = "1.3.1";
+(function(utf8, dash, process) {
+  var VERSION = "1.3.2";
   var http = require("http");
   var https = require("https");
   var fs = require("fs");
@@ -88,7 +88,7 @@
     var port = $jscomp$destructuring$var0.port;
     delete options.https;
     var data = querystring.stringify(options);
-    var req = mod.request({hostname:"closure-compiler.appspot.com", port:port, path:"/compile", method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded", "Content-Length":Buffer.byteLength(data)}}, function(res) {
+    var req = mod.request({hostname:"closure-compiler.appspot.com", port:port, path:"/compile", method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded", "Content-Length":Buffer.byteLength(data), }, }, function(res) {
       stream2buffer(res, function(err, buf) {
         if (buf) {
           buf = buf.toString(utf8);
@@ -148,7 +148,7 @@
   }
   function usage(stream) {
     var gccs = path.basename(process.argv[1], ".js");
-    var txt = "Usage:\n    " + gccs + ' [ <in_file> [ <out_file> ] ]\n\n    If <out_file> is omitted, out_file = in_file.min.js\n    If <in_file> == "-", stdin is used (<out_file> defaults to "-").\n    If <out_file> == "-", stdout is used.\n    If <in_file> and <out_file> are both omitted, they both default to "-".\n';
+    var txt = "Usage:\n    " + gccs + " --help\n        or\n    " + gccs + ' [OPTIONS] [--] [ <in_file> [ <out_file> ] ]\n\n    If <out_file> is omitted, out_file = in_file.min.js\n    If <in_file> == "-", stdin is used (<out_file> defaults to "-").\n    If <out_file> == "-", stdout is used.\n    If <in_file> and <out_file> are both omitted, they both default to "-".\n\n    OPTIONS:\n        --https              true | false\n        --compilation_level  WHITESPACE_ONLY | SIMPLE_OPTIMIZATIONS | ADVANCED_OPTIMIZATIONS\n        --formatting         pretty_print,print_input_delimiter\n        ...   (anything that Closure Compiler service accepts)\n';
     if (stream) {
       stream.write(txt);
     } else {
@@ -187,5 +187,5 @@
   function isStream(stream) {
     return isObject(stream) && isFunction(stream.pipe);
   }
-})("utf8", "-");
+})("utf8", "-", process);
 

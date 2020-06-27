@@ -25,6 +25,9 @@ Just call it with `npx gccs input.js`
 ### CLI
 
 ```sh
+# Show CLI help
+gccs --help
+
 # Compile input.js and save output as input.min.js
 gccs input.js
 
@@ -59,7 +62,7 @@ of [verup](https://github.com/duzun/verup) library:
 ...
 "scripts": {
   "es5": "gccs --compilation_level WHITESPACE_ONLY --formatting pretty_print -- verup.js dist/verup.js",
-  "min": "gccs dist/verup.js dist/verup.min.js",
+  "min": "gccs --compilation_level SIMPLE_OPTIMIZATIONS -- dist/verup.js dist/verup.min.js",
   "build": "npm run es5 && npm run min"
   ...
 }

@@ -5,13 +5,13 @@
  *
  * @author  Dumitru Uzun (https://DUzun.Me)
  * @license MIT https://github.com/duzun/gccs/blob/master/LICENSE
- * @version  1.3.1
+ * @version  1.3.2
  */
 
-((utf8, dash) => {
+((utf8, dash, process) => {
 'use strict';
 
-const VERSION = '1.3.1';
+const VERSION = '1.3.2';
 
 const http        = require('http');
 const https       = require('https');
@@ -201,12 +201,20 @@ function usage(stream) {
     const txt =
 
 `Usage:
-    ${gccs} [ <in_file> [ <out_file> ] ]
+    ${gccs} --help
+        or
+    ${gccs} [OPTIONS] [--] [ <in_file> [ <out_file> ] ]
 
     If <out_file> is omitted, out_file = in_file.min.js
     If <in_file> == "-", stdin is used (<out_file> defaults to "-").
     If <out_file> == "-", stdout is used.
     If <in_file> and <out_file> are both omitted, they both default to "-".
+
+    OPTIONS:
+        --https              true | false
+        --compilation_level  WHITESPACE_ONLY | SIMPLE_OPTIMIZATIONS | ADVANCED_OPTIMIZATIONS
+        --formatting         pretty_print,print_input_delimiter
+        ...   (anything that Closure Compiler service accepts)
 `;
 
     if ( stream ) {
@@ -251,4 +259,4 @@ function usage(stream) {
         return isObject(stream) && isFunction(stream.pipe);
     }
 
-})('utf8', '-');
+})('utf8', '-', process);
